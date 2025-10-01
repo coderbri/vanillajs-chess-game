@@ -46,6 +46,7 @@
   - Applied background colors and piece colors.
 
 ---
+
 ## v0.4.0 - Adding Drag-and-Drop Functionality (Step 4)
 
 - Fixed bug in `pieces.js` where piece `<div>`s were missing `class="piece"` and unique `id`.
@@ -58,3 +59,26 @@
   - Ensures proper stacking order of squares and pieces.
 - Added styling improvements for smooth piece movement.
 
+---
+
+## v0.5.0 - Turn Switching and Board Flipping (Step 5)
+- Added `changePlayer()` to alternate turns after each move.
+- Implemented board flipping:
+  - `reverseIds()` mirrors square IDs for white’s perspective.
+  - `revertIds()` restores IDs for black’s perspective.
+- Began groundwork for move validation:
+  - Added check for whether a square is already occupied with a piece (`taken`).
+- Current state:
+  - Pieces can move.
+  - Turns alternate properly.
+  - Capture/removal logic not yet implemented.
+
+---
+
+_v0.6.0 - Coming Soon_
+
+---
+
+<section align="center">
+  <code>coderBri © 2025</code>
+</section>

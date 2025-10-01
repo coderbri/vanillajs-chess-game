@@ -3,6 +3,10 @@ const playerDisplay = document.querySelector("#player"); // Displays current pla
 const infoDisplay = document.querySelector("#info-display"); // Info messages (check, captures, invalid moves)
 const width = 8; // Chessboard width (8x8)
 
+// Start state: Black goes first
+let playerGo = 'black';
+playerDisplay.textContent = 'black'; 
+
 // Initial layout of the chessboard (top row -> bottom row)
 const startPieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook,    // row 0
@@ -16,23 +20,21 @@ const startPieces = [
 ]
 
 function createBoard() {
-    /* Generates board dynamically. */
+    /* Dynamically generates 64 squares and places starting pieces. */
     startPieces.forEach((startPiece, i) => {
         // Create each square
         const square = document.createElement('div');
-        square.classList.add('square');
-        square.innerHTML = startPiece; // Insert piece (if any)
+        square.classList.add('square'); // Create square
+        square.innerHTML = startPiece;  // Insert piece (if any)
         
-        // 1. Make pieces draggable (if exists).
+        // Make pieces draggable (if exists).
         square.firstChild?.setAttribute('draggable', true);
         
-        // Unique ID for each square (0-63)
+        // Assign unique square ID (0-63)
         square.setAttribute('square-id', i);
         
-        // Calculate row number (1-8) from index i
+        // Calculate row number (1-8) from index i for alternating colors
         const row =  Math.floor( (63 - i) / 8) + 1;
-        
-        // Alternate square colors by row + column
         if ( row % 2 === 0 ) {
             square.classList.add(i % 2 === 0 ? 'beige' : 'brown');
         } else {
@@ -40,56 +42,86 @@ function createBoard() {
         }
         
         // Assign piece colors
-        if ( i <= 15) { // black pieces - first 16 squares
-            square.firstChild.firstChild.classList.add('black'); // Black pieces
-        }
-        if ( i >= 48) { // white pieces - last 16 squares
-            square.firstChild.firstChild.classList.add('white'); // White pieces
-        }
+        if ( i <= 15) square.firstChild.firstChild.classList.add('black'); // Black pieces - first 16 squares
+        if ( i >= 48) square.firstChild.firstChild.classList.add('white'); // White pieces - last 16 squares
         
-        gameboard.append(square); // Place square on board
+        gameboard.append(square); // Add square on board
     });
 }
 
-createBoard(); // Build the board on page load
+createBoard(); // Initialize board
 
 
-// 2. Selects all squares after creation
-const allSquares = document.querySelectorAll("#gameboard .square");
-// console.log(allSquares); // Correct selector: div.square.[beige/brown]
+// Grab all squares after board is built
+const allSquares = document.querySelectorAll(".square");
 
-// 3. Attach drag-and-drop events to each square via event listeners
+// Attach drag-and-drop listeners for each square
 allSquares.forEach(square => {
     square.addEventListener('dragstart', dragStart);
     square.addEventListener('dragover', dragOver);
     square.addEventListener('drop', dragDrop);
 });
 
-// 4. Global variables to track dragged pieces
+// Global variables to tracking drag state
 let startPositionId;
 let draggedElement;
 
-// 5. Record starting square and piece being dragged
 function dragStart(e) {
+    // Record starting square and piece
     startPositionId = e.target.parentNode.getAttribute('square-id');
     draggedElement = e.target;
 }
 
-// 6. Allow dropping by preventing default browser behaviour
 function dragOver(e) {
+    // Allow dropping on a square
     e.preventDefault();
 }
 
-// 7. Move piece to target square
 function dragDrop(e) {
-    // ! BASIC, NO CAPTURE LOGIC YET
+    // Attempt to drop piece into a new square
     e.stopPropagation();
     
+    // Check if target square is occupied
+    console.log(e.target);
+    const taken = e.target.classList.contains('piece');
     // this is the landing square the piece will be dropped
     // moves to a square with an existing piece (functionality not working yet)
+    
+    // TODO: Capture logic
     // e.target.parentNode.append(draggedElement);
     // e.target.remove(); // removes existing piece element
     
     // moves to an unoccupied square freely
-    e.target.append(draggedElement); // ! bugged: moving piece goes out of frame if it moves to the opponent's piece
+    // e.target.append(draggedElement);
+    // ! bugged: moving piece goes out of frame if it moves to the opponent's piece
+    
+    // TEMP: if successful drop, switch player turn after any move attempt
+    changePlayer();
+}
+
+function changePlayer() {
+    // Alternate turn and update board persepective
+    if (playerGo === "black") {
+        reverseIds(); // Flip board for white
+        playerGo = "white";
+        playerDisplay.textContent = "white";
+    } else {
+        revertIds(); // Flip board for black
+        playerGo = "black";
+        playerDisplay.textContent = "black";
+    }
+}
+
+function reverseIds() {
+    // Flip square IDs so white sees board from their perspective
+    const allSquares = document.querySelectorAll(".square");
+    allSquares.forEach((square, i) => { // reverse with 63 ((8 x 8 - 1) - i)
+        square.setAttribute("square-id", (width * width - 1) - i);
+    });
+}
+
+function revertIds() {
+    // Reset square IDs to original order (black's perspective)
+    const allSquares = document.querySelectorAll(".square");
+    allSquares.forEach((square, i) => square.setAttribute('square-id', i))
 }
