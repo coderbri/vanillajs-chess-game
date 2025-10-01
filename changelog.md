@@ -44,4 +44,17 @@
   - Styled chessboard as an 8×8 flex grid.
   - Defined square sizes and SVG scaling.
   - Applied background colors and piece colors.
-  
+
+---
+## v0.4.0 - Adding Drag-and-Drop Functionality (Step 4)
+
+- Fixed bug in `pieces.js` where piece `<div>`s were missing `class="piece"` and unique `id`.
+- Added drag-and-drop functionality:
+  - Pieces set as draggable in `createBoard()`.
+  - Squares now listen for `dragstart`, `dragover`, and `drop` events.
+  - Pieces can move freely to empty squares.
+- Updated CSS:
+  - Applied `position: relative` and `z-index` layers to `.piece`, `svg`, and `path`.
+  - Ensures proper stacking order of squares and pieces.
+- Added styling improvements for smooth piece movement.
+

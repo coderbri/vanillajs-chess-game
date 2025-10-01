@@ -10,6 +10,7 @@
 .square {
     height: 40px;
     width: 40px;
+    position: relative; /* sets the square to be a relative position container*/
 }
 
 /* Scale SVG pieces to fit inside the square */
@@ -17,6 +18,21 @@
     height: 30px;
     width: 30px;
     margin: 5px; /* centers the piece visually */
+    
+    /* sets the piece to be relative to the square */
+    position: relative; 
+    z-index: -9; /* sets behind the square */
+}
+
+/* sets the piece to be realtive to the square */
+path {
+    position: relative;
+    z-index: -10;
+}
+
+.piece { /* becomes the piece's div in which the piece will be detected */
+    position: relative; /*puts it in front of the square*/
+    z-index: 9;
 }
 
 /* Board square colors */
