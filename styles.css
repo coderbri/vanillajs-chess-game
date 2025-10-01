@@ -1,0 +1,36 @@
+/* Board container styled as an 8x8 flex grid */
+#gameboard {
+    width: 320px;
+    height: 320px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Each square is 40x40 px */
+.square {
+    height: 40px;
+    width: 40px;
+}
+
+/* Scale SVG pieces to fit inside the square */
+.square svg {
+    height: 30px;
+    width: 30px;
+    margin: 5px; /* centers the piece visually */
+}
+
+/* Board square colors */
+.beige {
+    background-color: rgb(201, 167, 154);
+}
+.brown {
+    background-color: rgb(133, 87, 79);
+}
+
+/* Piece colors applied to SVG paths */
+.black {
+    fill: rgb(28, 28, 28);
+}
+.white {
+    fill: rgb(255, 255, 255);
+}

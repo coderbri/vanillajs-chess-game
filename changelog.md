@@ -27,3 +27,21 @@
   - `pieces.js` provides piece data.  
   - `app.js` reads these constants (via `<script>` order in `index.html`).  
   - Document selectors give `app.js` control over HTML elements for rendering and game updates.
+
+---
+
+## v0.3.0 - Chessboard Creation (Step 3)
+- Implemented `createBoard()` in `app.js`:
+  - Dynamically generates 64 `<div>` squares.
+  - Inserts chess pieces based on `startPieces` array.
+  - Assigns `square-id` attribute for future move tracking.
+- Added alternating board colors:
+  - `.beige` and `.brown` applied via row and index calculation.
+- Implemented piece coloring:
+  - Black pieces (indices 0–15) get `.black`.
+  - White pieces (indices 48–63) get `.white`.
+- Updated `styles.css`:
+  - Styled chessboard as an 8×8 flex grid.
+  - Defined square sizes and SVG scaling.
+  - Applied background colors and piece colors.
+  
