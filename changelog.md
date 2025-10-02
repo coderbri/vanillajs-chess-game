@@ -92,7 +92,23 @@
 
 ---
 
-_v0.7.0 - Coming Soon_
+## v0.7.0 - Pawn Move Validation (Step 7)
+- Introduced **piece-specific move validation** via `switch(piece)`.
+- Implemented **pawn rules**:
+  - **Single-step forward**: Pawn moves one square ahead.
+  - **Double-step forward**: Allowed only on pawn’s first move from its starting row.
+  - **Diagonal capture**: Pawn captures opponent piece diagonally one square forward (left or right).
+- Enforced **conditional diagonal movement**:
+  - Diagonal moves are only legal if a piece occupies the target square.
+- Established the mathematical model:
+  - Forward movement = `+8`
+  - Diagonal captures = `+7` (left) or `+9` (right)
+  - Double-step = `+16`
+- Laid groundwork for other pieces by using `switch` for modular validation.
+
+---
+
+_v0.8.0 - Coming Soon_
 
 ---
 

@@ -88,9 +88,9 @@ function dragDrop(e) {
     // -- Move Validation Variables --
     const correctGo = draggedElement.firstChild.classList.contains(playerGo);   // Is the piece mine?
     const taken = e.target.classList.contains('piece');                         // Is square occupied?
-    const valid = checkIfValid(e.target);                                       //  Placeholder validity check
+    const valid = checkIfValid(e.target);                                       // Placeholder validity check
     const opponentGo = playerGo === 'white' ? 'black' : 'white';                // Opponent's color
-    console.log('opponentGo', opponentGo);  // opponentGo: "white"
+    // console.log('opponentGo', opponentGo);  // opponentGo: "white"
     
     const takenByOpponent = e.target.firstChild?.classList.contains(opponentGo); // Square occupied by opponent?
     
@@ -121,21 +121,48 @@ function dragDrop(e) {
 }
 
 function checkIfValid(target) {
-    /* Basic framework for move validation (no rules enforced yet). */
+    /*
+        Checks whether the dragged piece's move is valid.
+        Currently only handles pawn logic.
+    */
     // console.log(target); // Debug log: <div class="square brown" square-id="19"></div>
     
-    // Determine square IDs
-    const targetId = Number(target.getAttribute('square-id')) 
-                    || Number(target.parentNode.getAttribute('square-id'));
+    // -- Identifying starting/ending squares --
+    const targetId = Number(target.getAttribute('square-id')) || Number(target.parentNode.getAttribute('square-id'));
     const startId = Number(startPositionId);
-    const piece = draggedElement.id;
+    const piece = draggedElement.id; // Which piece is moving? (ex: 'pawn')
     
     // Debug logs
     console.log('targetId', targetId);  // 19
     console.log('startId', startId);    // 11
     console.log('piece', piece);        // pawn
     
-    // TODO: Implement piece-specific movement rules
+    // TODO: Implement piece-specific movement rules (WIP)
+    switch(piece) {
+        case 'pawn' :
+            /*
+                PAWN MOVEMENT RULES:
+                - Can move forward 1 square
+                - From starting row, can move forward 2 squares
+                - Can move diagonally forward only if capturing
+            */
+            const starterRow = [8,9,10,11,12,13,14,15]; // pawns start from this row
+            // These are black pawns' starting position (row 2 from black's perspective).
+            // White pawns are handled when the board flips (reverseIds / revertIds).
+            
+            if (
+                // Rule 1: Pawn can move 2 squares forward if it's still on starting row (ex: move from sq 8 -> sq 24)
+                starterRow.includes(startId) && startId + width * 2 === targetId ||
+                // Rule 2: Pawn can move 1 square forward (ex: move from sq 8 -> sq 16)
+                startId + width === targetId ||
+                // Rule 3: Pawn can move diagonally (left or right) IF there is an opponent piece
+                startId + width - 1 === targetId && document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
+                startId + width + 1 === targetId && document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild
+            ) {
+                return true;
+            }
+            break;
+    }
 }
 
 function changePlayer() {
