@@ -75,7 +75,24 @@
 
 ---
 
-_v0.6.0 - Coming Soon_
+## v0.6.0 - Enforcing Correct Turns and Captures (Step 6)
+- Implemented **turn enforcement**:
+  - Only the current player can move their own pieces (`correctGo` check).
+- Added **opponent detection**:
+  - Determined opponent’s color dynamically (`opponentGo`).
+  - Checked if the target square contains an opponent’s piece (`takenByOpponent`).
+- Added capture logic:
+  - Replaced opponent’s piece if the square contained the opponent.
+  - Blocked illegal moves when trying to move into a square occupied by the same color.
+- Introduced **info display feedback**:
+  - Illegal moves show an error message for 2 seconds.
+- Enhanced **console logging**:
+  - Logs current player, opponent, start square, target square, and dragged piece.
+  - Critical for debugging and understanding decision flow.
+
+---
+
+_v0.7.0 - Coming Soon_
 
 ---
 

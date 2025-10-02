@@ -81,22 +81,61 @@ function dragDrop(e) {
     // Attempt to drop piece into a new square
     e.stopPropagation();
     
-    // Check if target square is occupied
-    console.log(e.target);
-    const taken = e.target.classList.contains('piece');
-    // this is the landing square the piece will be dropped
-    // moves to a square with an existing piece (functionality not working yet)
+    // ? Log current state for debugging
+    // console.log('playerGo', playerGo);      // playerGo: "black"
+    // console.log('e.target', e.target);      // e.target: <div class="square brown" square-id="46"></div>
     
-    // TODO: Capture logic
-    // e.target.parentNode.append(draggedElement);
-    // e.target.remove(); // removes existing piece element
+    // -- Move Validation Variables --
+    const correctGo = draggedElement.firstChild.classList.contains(playerGo);   // Is the piece mine?
+    const taken = e.target.classList.contains('piece');                         // Is square occupied?
+    const valid = checkIfValid(e.target);                                       //  Placeholder validity check
+    const opponentGo = playerGo === 'white' ? 'black' : 'white';                // Opponent's color
+    console.log('opponentGo', opponentGo);  // opponentGo: "white"
     
-    // moves to an unoccupied square freely
-    // e.target.append(draggedElement);
-    // ! bugged: moving piece goes out of frame if it moves to the opponent's piece
+    const takenByOpponent = e.target.firstChild?.classList.contains(opponentGo); // Square occupied by opponent?
     
-    // TEMP: if successful drop, switch player turn after any move attempt
-    changePlayer();
+    // -- Decision Flow --
+    if (correctGo) {
+        // Case 1: Capturing opponent
+        if (takenByOpponent && valid) {
+            e.target.parentNode.append(draggedElement); // Place dragged piece into opponent's square
+            e.target.remove();                          // Removes opponent piece
+            changePlayer();
+            return;
+        }
+        
+        // Case 2: Square occupied by own piece -> Illegal
+        if (taken && !takenByOpponent) {
+            infoDisplay.textContent = "Illegal move! You cannot go here.";
+            setTimeout(() => infoDisplay.textContent = "", 2000);
+            return;
+        }
+        
+        // Case 3: Free square -> Move normally
+        if (valid) {
+            e.target.append(draggedElement);
+            changePlayer();
+            return;
+        }
+    }
+}
+
+function checkIfValid(target) {
+    /* Basic framework for move validation (no rules enforced yet). */
+    // console.log(target); // Debug log: <div class="square brown" square-id="19"></div>
+    
+    // Determine square IDs
+    const targetId = Number(target.getAttribute('square-id')) 
+                    || Number(target.parentNode.getAttribute('square-id'));
+    const startId = Number(startPositionId);
+    const piece = draggedElement.id;
+    
+    // Debug logs
+    console.log('targetId', targetId);  // 19
+    console.log('startId', startId);    // 11
+    console.log('piece', piece);        // pawn
+    
+    // TODO: Implement piece-specific movement rules
 }
 
 function changePlayer() {
