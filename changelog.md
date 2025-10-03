@@ -108,7 +108,27 @@
 
 ---
 
-_v0.8.0 - Coming Soon_
+## v0.8.0 - Implemented Valid Moves for All Pieces
+- Added full movement validation logic inside `checkIfValid()` using a `switch(piece)` structure.
+- Implemented pawn rules:
+  - Single/double forward moves from starting row
+  - Diagonal captures
+- Implemented knight moves:
+  - L-shaped jumps (8 possible moves)
+- Implemented bishop moves:
+  - Diagonal movement with blocking checks
+- Implemented rook moves:
+  - Horizontal/vertical movement with blocking checks
+- Implemented queen moves:
+  - Combination of rook + bishop logic
+- Implemented king moves:
+  - One-square movement in any direction
+- Added detailed path-blocking checks to prevent illegal sliding moves.
+- Updated drag-and-drop handling to respect new validation.
+
+---
+
+_v0.9.0 - Coming Soon_
 
 ---
 
