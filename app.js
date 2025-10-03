@@ -78,7 +78,7 @@ function dragOver(e) {
 }
 
 function dragDrop(e) {
-    // Attempt to drop piece into a new square
+    // Prevent bubbling issues with nested elements
     e.stopPropagation();
     
     // ? Log current state for debugging
@@ -86,21 +86,22 @@ function dragDrop(e) {
     // console.log('e.target', e.target);      // e.target: <div class="square brown" square-id="46"></div>
     
     // -- Move Validation Variables --
-    const correctGo = draggedElement.firstChild.classList.contains(playerGo);   // Is the piece mine?
-    const taken = e.target.classList.contains('piece');                         // Is square occupied?
-    const valid = checkIfValid(e.target);                                       // Placeholder validity check
-    const opponentGo = playerGo === 'white' ? 'black' : 'white';                // Opponent's color
-    // console.log('opponentGo', opponentGo);  // opponentGo: "white"
+    const correctGo = draggedElement.firstChild.classList.contains(playerGo);    // Ensure piece belongs to current player
+    const taken = e.target.classList.contains('piece');                          // Check if target square already has a piece
+    const valid = checkIfValid(e.target);                                        // Placeholder for movement validation logic
+    const opponentGo = playerGo === 'white' ? 'black' : 'white';                 // Identify opponent
     
-    const takenByOpponent = e.target.firstChild?.classList.contains(opponentGo); // Square occupied by opponent?
+    // console.log('opponentGo', opponentGo);  // opponentGo: "white"
+    const takenByOpponent = e.target.firstChild?.classList.contains(opponentGo); // True if square contains opponent's piece
     
     // -- Decision Flow --
     if (correctGo) {
-        // Case 1: Capturing opponent
+        // Case 1: Capturing opponent's piece
         if (takenByOpponent && valid) {
-            e.target.parentNode.append(draggedElement); // Place dragged piece into opponent's square
-            e.target.remove();                          // Removes opponent piece
-            changePlayer();
+            e.target.parentNode.append(draggedElement); // Move piece into opponent's square
+            e.target.remove();                          // Remove opponent piece from board
+            checkForWin();                              // After capture, check if a king was taken
+            changePlayer();                             // Switch turns
             return;
         }
         
@@ -113,8 +114,9 @@ function dragDrop(e) {
         
         // Case 3: Free square -> Move normally
         if (valid) {
-            e.target.append(draggedElement);
-            changePlayer();
+            e.target.append(draggedElement); // Place piece into empty square
+            checkForWin();                   // After move, check win condition
+            changePlayer();                  // Switch turns
             return;
         }
     }
@@ -388,4 +390,22 @@ function revertIds() {
     allSquares.forEach((square, i) => square.setAttribute('square-id', i))
 }
 
-// TODO: Check for a win
+function checkForWin() {
+    /* -- Check if either king is missing (game over) -- */
+    const kings = Array.from(document.querySelectorAll("#king")); // Collect all "king" elements
+    console.log(kings); // Debugging log
+    
+    // Case: White king missing -> Black wins
+    if (!kings.some(king => king.firstChild.classList.contains('white'))) {
+        infoDisplay.innerHTML = "Checkmate! Black player wins!";
+        const allSquares = document.querySelectorAll('.square');
+        allSquares.forEach(sqaure => sqaure.firstChild?.setAttribute('draggable', false)); // Disable movement
+    }
+    // Case: Black king is missing -> White wins!
+    if (!kings.some(king => king.firstChild.classList.contains('black'))) {
+        infoDisplay.innerHTML = "Checkmate! White player wins!";
+        const allSquares = document.querySelectorAll('.square');
+        // remove movement so that its no longer possible after win
+        allSquares.forEach(sqaure => sqaure.firstChild?.setAttribute('draggable', false)); // Disable movement
+    }
+}
