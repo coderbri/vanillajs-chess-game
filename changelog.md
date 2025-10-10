@@ -1,5 +1,23 @@
 # Vanilla JS Chess Game - Changelog
 
+## v0.10.0 – Enhanced Piece Logic and Capture Mechanics
+**Release Date:** October 10, 2025  
+
+- **Fixed bishop and queen movement logic**
+  - Corrected diagonal traversal to ensure movement paths respect board boundaries and cannot skip over blocking pieces.
+  - Optimized conditional checks to prevent invalid diagonal or straight-line moves.
+
+- **Implemented reliable piece capture**
+  - Resolved prior bug where captures failed due to improper target detection and DOM structure referencing.
+  - Captures now properly remove the opponent’s piece before placing the player’s piece in the target square.
+  - Improved move validation flow to ensure capture logic triggers only when valid and allowed.
+
+- **Refactored post-checkmate handling**
+  - Introduced a dedicated helper function to disable all pieces after a checkmate condition.
+  - Ensures no further interactions or movements are possible once a player wins.
+
+---
+
 ## v0.9.0 - Chess Win Logic (Step 9)
 - Implemented win condition logic:
   - Added `checkForWin()` to verify if a king has been captured.
