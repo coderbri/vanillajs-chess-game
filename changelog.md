@@ -1,5 +1,23 @@
 # Vanilla JS Chess Game - Changelog
 
+## v0.12.0 – UI Redesign (ui-redesign branch)
+**Release Date:** March 12, 2026
+
+- **Introduced start screen and game screen views**
+  - Game now opens on a start screen with title and button; board only renders on game start.
+  - Added `New Game` button to reset and rebuild the board without a page reload.
+- **Redesigned layout and visual style**
+  - Two-column desktop layout (board left, side panel right) with responsive stacking on mobile.
+  - Board enlarged to 70px squares with a rounded dark-brown frame and rank/file labels (1–8, A–H).
+  - Warm grey page background, Playfair Display title font, Lora body font.
+  - Piece sizes and spacing updated to match new square dimensions.
+- **Structured side panel for future features**
+  - Placeholder areas added for move notation log and color/side picker (hidden, not yet functional).
+- **Consolidated CSS with design tokens**
+  - All colors, sizes, and spacing defined as CSS custom properties for easy theming.
+
+---
+
 ## v0.11.0 – Move Validation Bugfixes and Edge-Case Handling
 **Release Date:** March 12, 2026
 

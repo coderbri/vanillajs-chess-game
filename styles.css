@@ -1,52 +1,358 @@
-/* Board container styled as an 8x8 flex grid */
+/* ════════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════════ */
+:root {
+    --bg:            #e8e4df;          /* warm light grey page background */
+    --board-border:  #6b4c3b;          /* dark brown board frame */
+    --sq-light:      #d4b89a;          /* light square */
+    --sq-dark:       #a07850;          /* dark square */
+    --label-color:   #f5ede4;          /* rank/file label text on border */
+    --panel-bg:      #e8e4df;          /* side panel background (matches page) */
+    --info-bg:       #d6cfc8;          /* muted warm box for info messages */
+    --info-border:   #bfb5ac;
+    --btn-bg:        #6b4c3b;          /* brown button */
+    --btn-hover:     #543c2e;
+    --btn-text:      #f5ede4;
+    --title-color:   #1a1008;          /* near-black title */
+    --text-primary:  #2c1f14;
+    --text-muted:    #7a6a5e;
+    --piece-white:   rgb(255, 255, 255);
+    --piece-black:   rgb(28, 28, 28);
+
+    --board-size:    560px;            /* board canvas (8 squares × 70px) */
+    --sq-size:       70px;
+    --border-width:  36px;             /* board frame thickness */
+    --label-font:    0.75rem;
+}
+
+/* ════════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    overflow: hidden; /* prevent scroll on desktop */
+}
+
+/* ════════════════════════════════════════════
+   START SCREEN
+════════════════════════════════════════════ */
+#start-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    animation: fadeIn 0.5s ease;
+}
+
+#start-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* ════════════════════════════════════════════
+   GAME SCREEN
+════════════════════════════════════════════ */
+#game-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    height: 100vh;
+    padding: 2rem;
+    animation: fadeIn 0.4s ease;
+}
+
+#game-screen.hidden,
+#start-screen.hidden {
+    display: none;
+}
+
+/* ════════════════════════════════════════════
+   SHARED TITLE
+════════════════════════════════════════════ */
+.game-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: 3.5rem;
+    color: var(--title-color);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: -0.5px;
+    line-height: 1;
+}
+
+.title-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.title-icon svg {
+    width: 2.6rem;
+    height: 2.6rem;
+    fill: var(--title-color);
+    position: relative;
+    top: 2px;
+}
+
+/* ════════════════════════════════════════════
+   BOARD WRAPPER + CONTAINER
+════════════════════════════════════════════ */
+#board-wrapper {
+    flex-shrink: 0;
+}
+
+#board-container {
+    position: relative;
+    display: grid;
+    /* col: rank-label strip | board squares */
+    grid-template-columns: var(--border-width) var(--board-size);
+    /* row: board squares | file-label strip */
+    grid-template-rows: var(--board-size) var(--border-width);
+    background: var(--board-border);
+    border-radius: 14px;
+    padding: var(--border-width);
+    box-shadow: 0 8px 32px rgba(60, 30, 10, 0.28), 0 2px 8px rgba(60,30,10,0.12);
+}
+
+/* ── Rank labels (left strip, 8 → 1 top → bottom) ── */
+#rank-labels {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-right: 2px;
+}
+
+#rank-labels span {
+    font-family: 'Lora', serif;
+    font-size: var(--label-font);
+    font-weight: 600;
+    color: var(--label-color);
+    line-height: 1;
+    width: var(--sq-size);
+    text-align: center;
+    height: var(--sq-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: calc(var(--border-width) * -1);
+}
+
+/* ── File labels (bottom strip, A → H) ── */
+#file-labels {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 4px;
+}
+
+#file-labels span {
+    font-family: 'Lora', serif;
+    font-size: var(--label-font);
+    font-weight: 600;
+    color: var(--label-color);
+    width: var(--sq-size);
+    text-align: center;
+}
+
+/* ════════════════════════════════════════════
+   GAMEBOARD GRID
+════════════════════════════════════════════ */
 #gameboard {
-    width: 320px;
-    height: 320px;
+    grid-column: 2;
+    grid-row: 1;
+    width: var(--board-size);
+    height: var(--board-size);
     display: flex;
     flex-wrap: wrap;
 }
 
-/* Each square is 40x40 px */
 .square {
-    height: 40px;
-    width: 40px;
-    position: relative; /* sets the square to be a relative position container*/
+    height: var(--sq-size);
+    width: var(--sq-size);
+    position: relative;
+    cursor: pointer;
 }
 
-/* Scale SVG pieces to fit inside the square */
+/* ── Square colours ── */
+.beige { background-color: var(--sq-light); }
+.brown { background-color: var(--sq-dark); }
+
+/* ── Piece SVG sizing ── */
 .square svg {
-    height: 30px;
-    width: 30px;
-    margin: 5px; /* centers the piece visually */
-    
-    /* sets the piece to be relative to the square */
-    position: relative; 
-    z-index: -9; /* sets behind the square */
+    height: 52px;
+    width: 52px;
+    margin: 9px;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
 }
 
-/* sets the piece to be realtive to the square */
 path {
     position: relative;
-    z-index: -10;
+    z-index: 0;
 }
 
-.piece { /* becomes the piece's div in which the piece will be detected */
-    position: relative; /*puts it in front of the square*/
+.piece {
+    position: relative;
     z-index: 9;
+    cursor: grab;
+    transition: transform 0.1s ease;
 }
 
-/* Board square colors */
-.beige {
-    background-color: rgb(201, 167, 154);
-}
-.brown {
-    background-color: rgb(133, 87, 79);
-}
+.piece:active { cursor: grabbing; transform: scale(1.12); }
 
-/* Piece colors applied to SVG paths */
-.black {
-    fill: rgb(28, 28, 28);
-}
+/* ── Piece colours ── */
+.black { fill: var(--piece-black); }
 .white {
-    fill: rgb(255, 255, 255);
+    fill: var(--piece-white);
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.45));
+}
+
+/* ════════════════════════════════════════════
+   SIDE PANEL
+════════════════════════════════════════════ */
+#side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    width: 320px;
+}
+
+/* ── Info box ── */
+#info-box {
+    background: var(--info-bg);
+    border: 1px solid var(--info-border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+#player-line {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: capitalize;
+}
+
+#info-display {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-style: italic;
+    min-height: 1.2em;
+}
+
+/* ── Future placeholder panels (invisible but reserve space for layout) ── */
+.future-panel {
+    /* Hidden but occupies no space yet — expand when features land */
+    display: none;
+}
+
+/* ════════════════════════════════════════════
+   ACTION BUTTON  (shared: Start Game / New Game)
+════════════════════════════════════════════ */
+.action-btn {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 2.4rem;
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+    box-shadow: 0 4px 12px rgba(60,30,10,0.2), 0 2px 4px rgba(60,30,10,0.12);
+}
+
+.action-btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(60,30,10,0.28);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(60,30,10,0.18);
+}
+
+/* Start Game button slightly larger on its own screen */
+#start-btn {
+    font-size: 1.15rem;
+    letter-spacing: 0.1em;
+    padding: 1.1rem 3rem;
+    min-width: 280px;
+}
+
+/* ════════════════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════════════ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ════════════════════════════════════════════
+   RESPONSIVE — MOBILE
+   On small screens: start screen shows title + button only.
+   Game screen stacks board on top, panel below (scrollable).
+════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    :root {
+        --sq-size:       42px;
+        --board-size:    336px;
+        --border-width:  26px;
+    }
+
+    html, body { overflow: auto; }
+
+    #game-screen {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        padding: 1.5rem 1rem 2rem;
+        gap: 1.5rem;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    #side-panel {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .game-title { font-size: 2.4rem; }
+    .title-icon svg { width: 1.9rem; height: 1.9rem; }
+
+    .square svg { height: 30px; width: 30px; margin: 6px; }
+
+    #start-btn { min-width: 240px; }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --sq-size:       38px;
+        --board-size:    304px;
+        --border-width:  22px;
+    }
+
+    .square svg { height: 26px; width: 26px; margin: 6px; }
+    .game-title { font-size: 2rem; }
 }
