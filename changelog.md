@@ -1,5 +1,22 @@
 # Vanilla JS Chess Game - Changelog
 
+## v0.11.0 – Move Validation Bugfixes and Edge-Case Handling
+**Release Date:** March 12, 2026
+
+- **Hardened board initialization**
+  - Used optional chaining when assigning `.black`/`.white` classes so empty squares no longer trigger errors during setup.
+- **Improved drag-and-drop move flow**
+  - Normalized drop handling to resolve the target square correctly and use a single `targetPiece` lookup.
+  - Added user-facing feedback for invalid moves instead of failing silently when a move is not allowed.
+- **Fixed pawn movement and capture rules**
+  - Enforced that 1- and 2-step forward pawn moves only succeed when all forward squares are empty.
+  - Restricted diagonal pawn moves to capturing only opposing pieces on the correct diagonal.
+- **Eliminated sliding and edge-wrapping bugs**
+  - Introduced `pieceAt`, `pathClear`, and `slidingRay` helpers to validate clear paths for sliding pieces.
+  - Added column-aware guards so bishops, rooks, queens, kings, and knights cannot “wrap” across board edges when moving.
+
+---
+
 ## v0.10.0 – Enhanced Piece Logic and Capture Mechanics
 **Release Date:** October 10, 2025  
 
